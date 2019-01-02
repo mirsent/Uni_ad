@@ -1,0 +1,55 @@
+{
+    "pages" : [
+        {
+            "path" : "pages/advertise/advertise",
+            "style" : {
+                "navigationBarTitleText" : "广而告之",
+                "usingComponents" : {
+                    "i-tabs" : "/wxcomponents/tabs/index",
+                    "i-tab" : "/wxcomponents/tab/index"
+                }
+            }
+        },
+        {
+            "path" : "pages/advertise-detail/advertise-detail",
+            "style" : {
+				"usingComponents" : {
+				    "i-icon" : "/wxcomponents/icon/index"
+				}
+			}
+        },
+        {
+            "path" : "pages/advertiser/advertiser",
+            "style" : {
+                "navigationBarTitleText" : "广告商",
+                "usingComponents" : {
+                    "i-icon" : "/wxcomponents/icon/index",
+                    "i-avatar" : "/wxcomponents/avatar/index"
+                }
+            }
+        }
+    ],
+    "condition" : {
+        "current" : 0,
+        "list" : [
+            {
+                "name" : "advertise",
+                "path" : "pages/advertise/advertise"
+            },
+            {
+                "name" : "advertise-detail",
+                "path" : "pages/advertise-detail/advertise-detail"
+            },
+            {
+                "name" : "advertiser",
+                "path" : "pages/advertiser/advertiser"
+            }
+        ]
+    },
+    "globalStyle" : {
+        "navigationBarTextStyle" : "black",
+        "navigationBarTitleText" : "广而告之",
+        "navigationBarBackgroundColor" : "#F8F8F8",
+        "backgroundColor" : "#F8F8F8"
+    }
+}

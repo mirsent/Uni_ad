@@ -1,0 +1,39 @@
+.ad-list {
+	height: 100%;
+	background-color: #fff;
+	padding: 8px;
+	box-sizing: border-box;
+}
+
+.ad-list .list-cell {
+	margin-bottom: 8px;
+}
+
+.ad-list .list-cell+.list-cell {
+	border-top: 1px solid #f6f6f6;
+}
+
+.ad-list .list-img image {
+	width: 100%;
+}
+
+.ad-list .list-title {
+	color: #333;
+	font-size: 34upx;
+	line-height: 2;
+}
+
+.ad-list .list-brief {
+	color: #aeaeae;
+	font-size: 34upx;
+}
+
+.ad-list .list-footer {
+	color: #aeaeae;
+	font-size: 28upx;
+	line-height: 2;
+}
+
+.ad-list .list-footer .brief-e+.brief-e {
+	margin-left: 10px;
+}
