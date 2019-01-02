@@ -109,7 +109,13 @@
 					url: "../advertise-detail/advertise-detail?detailData=" + JSON.stringify(detail)
 				})
 			}
-		}
+		},
+        onShareAppMessage() {
+        	return {
+        		title: '纯粹的广告',
+        		path: '/pages/advertise/advertise'
+        	}
+        }
 	}
 </script>
 
