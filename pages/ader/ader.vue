@@ -6,49 +6,36 @@
 				<i-avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large"></i-avatar>
 			</view>
 			<view class="info-name">
-				水果批发
+				{{aderInfo.ader_name}}
 			</view>
 			<view class="info-list">
 				<view class="list-cell">
 					<i-icon type="service" color="#fff" size="20" />
-					<text class="list-title">服务内容 ...</text>
+					<text class="list-title">{{aderInfo.service}}</text>
 				</view>
 				<view class="list-cell">
 					<i-icon type="coordinates" color="#fff" size="20" />
-					<text class="list-title">天津市和平区</text>
+					<text class="list-title">{{aderInfo.location}}</text>
 				</view>
 				<view class="list-cell">
 					<i-icon type="mobilephone" color="#fff" size="20" />
-					<text class="list-title" @tap="call(18222267325)">18222267325</text>
+					<text class="list-title" @tap="call(aderInfo.tel)">{{aderInfo.tel}}</text>
 				</view>
 			</view>
 		</view>
 		
-		<scroll-view scroll-y :style="{height: scroll_height+'px'}">
+		<scroll-view scroll-y :style="{height: scrollHeight+'px'}">
 			<view class="ad-list">
-				<view class="list-cell" @tap="goDetail">
+				<view class="list-cell" @tap="goDetail(ad.id)" v-for="(ad,index) in adData" :key="index">
 					<view class="list-title">
-						[水果] 新鲜采摘橙子30元5斤包邮
+						[{{ad.tag_name}}] {{ad.ad_title}}
 					</view>
 					<view class="flex-rowsb list-footer">
 						<view>
-							<text class="brief-e">2018-12-28 15:11</text>
+							<text class="brief-e">{{ad.publish_datetime}}</text>
 						</view>
 						<view>
-							<text class="brief-e">36看</text>
-						</view>
-					</view>
-				</view>
-				<view class="list-cell">
-					<view class="list-title">
-						[开发] 小程序开发
-					</view>
-					<view class="flex-rowsb list-footer">
-						<view>
-							<text class="brief-e">2018-12-28 15:09</text>
-						</view>
-						<view>
-							<text class="brief-e">71看</text>
+							<text class="brief-e">{{ad.visited}}看</text>
 						</view>
 					</view>
 				</view>
@@ -62,11 +49,14 @@
 	export default {
 		data() {
 			return {
-				scroll_height: ''
+				scrollHeight: '',
+				aderInfo: [],
+				adData: []
 			};
 		},
 		onLoad(e) {
-			// let info = JSON.parse(e.detailData);
+			let info = JSON.parse(e.detailData);
+			this.getAdvertiser(info.advertiser_id)
 		},
 		onReady() {
 			uni.getSystemInfo({
@@ -77,23 +67,39 @@
 					query.select(".info").boundingClientRect();
 					query.exec(data => {
 						let info = data[0];
-						this.scroll_height = windowHeight - info.height;
+						this.scrollHeight = windowHeight - info.height;
 					});
 				}
 			})
 		},
 		methods: {
+			getAdvertiser(id) {
+				uni.request({
+					url: this.$requestUrl+'get_advertiser_info',
+					method: 'GET',
+					data: {
+						advertiser_id: id
+					},
+					success: res => {
+						let data = res.data.data;
+						this.aderInfo = data.info
+						this.adData = data.advertises
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 			call(e) {
 				uni.makePhoneCall({
 					phoneNumber: e.toString()
 				});
 			},
-			goDetail() {
+			goDetail(e) {
 				let detail = {
-					
+					advertise_id: e
 				}
 				uni.navigateTo({
-					url: "../advertise-detail/advertise-detail?detailData=" + JSON.stringify(detail)
+					url: "../ad-detail/ad-detail?detailData=" + JSON.stringify(detail)
 				})
 			}
 		}

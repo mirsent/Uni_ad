@@ -11,25 +11,25 @@
 		<view class="ad-list">
 			<view class="list-cell">
 				<view class="list-title">
-					[水果] 新鲜采摘橙子30元5斤包邮
+					[{{adInfo.tag_name}}] {{adInfo.ad_title}}
 				</view>
 				<view class="list-brief">
-					果型端庄、色泽鲜艳、风味浓甜、肉质脆嫩，无籽化渣，营养保健价值高，是不可多得的水果珍品。
+					{{adInfo.ad_brief}}
 				</view>
 				<view class="flex-rowsb list-footer">
 					<view>
-						<text class="brief-e">2018-12-28 15:11</text>
-						<text class="brief-e">Kim chi</text>
+						<text class="brief-e">{{adInfo.publish_time}}</text>
+						<text class="brief-e">{{adInfo.ader_name}}</text>
 					</view>
 					<view>
-						<text class="brief-e">36看</text>
+						<text class="brief-e">{{adInfo.visited}}看</text>
 					</view>
 				</view>
 			</view>
 		</view>
 		
 		<view class="tab">
-			<view class="tab-more" @tap="goAdvertiser">
+			<view class="tab-more" @tap="goAdvertiser(adInfo.publisher_id)">
 				查看此人更多
 			</view>
 			<view class="action-group">
@@ -49,24 +49,44 @@
 				autoplay: true,
 				interval: 3000,
 				duration: 1000,
+				adInfo: []
 			};
 		},
 		onLoad(e) {
-			// let info = JSON.parse(e.detailData);
+			let info = JSON.parse(e.detailData);
+			this.getAdDetail(info.advertise_id)
 		},
 		methods: {
-			goAdvertiser() {
+			getAdDetail(id) {
+				uni.request({
+					url: this.$requestUrl+'get_advertise_detail',
+					method: 'GET',
+					data: {
+						advertise_id: id
+					},
+					success: res => {
+						console.log(res.data);
+						this.adInfo = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			goAdvertiser(e) {
 				let detail = {
-					
+					advertiser_id: e
 				}
 				uni.redirectTo({
-					url: "../advertiser/advertiser?detailData=" + JSON.stringify(detail)
+					url: "../ad/ad?detailData=" + JSON.stringify(detail)
 				})
 			},
 			goHome() {
-				uni.switchTab({
-					url: "../advertise/advertise"
-				})
+				uni.redirectTo({
+					url: '../ad/ad',
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
 			}
 		}
 	}
