@@ -48,29 +48,73 @@
 					<i-icon type="add" size="30" color="#fff" />
 				</view>
 			</view>
-			
-			<i-tab-bar :current="currentBar">
+
+			<i-tab-bar current="home" @change="barChange">
 				<i-tab-bar-item key="home" icon="activity" current-icon="activity_fill" title="Home"></i-tab-bar-item>
-				<i-tab-bar-item key="mine" icon="mine" current-icon="mine_fill" dot title="My"></i-tab-bar-item>
+				<i-tab-bar-item key="mine" icon="mine" current-icon="mine_fill" title="My"></i-tab-bar-item>
 			</i-tab-bar>
 		</view>
+
+		<button class="login-btn" open-type="getUserInfo" v-if="!authed" @getuserinfo="getUserInfo"></button>
+
 	</view>
 </template>
 
 <script>
+	import service from '../../service.js';
 	export default {
 		data() {
 			return {
+				authed: false,
+				openid: '',
+				
 				currentScroll: 0,
-				currentBar: 'home',
 				scrollHeight: '',
 				tagData: [],
 				adData: []
 			}
 		},
 		onLoad() {
-			this.getTags();
-			this.getAdvertises();
+			uni.showLoading({
+				title: '',
+				mask: false
+			});
+			
+			let _this = this;
+			// #ifdef MP-WEIXIN
+			wx.getSetting({
+				success(res) {
+					if (res.authSetting['scope.userInfo']) {
+						_this.authed = true;
+					}
+				}
+			})
+			// #endif
+			
+			uni.login({
+				provider: 'weixin',
+				success: res => {
+					uni.request({
+						url: this.$requestUrl + 'code_2_session',
+						method: 'GET',
+						data: {
+							js_code: res.code
+						},
+						success: res => {
+							let info = res.data.data;
+							this.openid = info.openid
+							service.addUser(info)
+						},
+						fail: () => {},
+						complete: () => {}
+					});
+				},
+				fail: () => {},
+				complete: () => {
+					this.getTags();
+					this.getAdvertises();
+				}
+			});
 		},
 		onReady() {
 			uni.getSystemInfo({
@@ -89,6 +133,24 @@
 			})
 		},
 		methods: {
+			getUserInfo(e) {
+				this.authed = true;
+				uni.request({
+					url: this.$requestUrl+'update_advertiser',
+					method: 'POST',
+					header: {
+						'content-type': 'application/x-www-form-urlencoded'
+					},
+					data: {
+						openid: this.openid,
+						head: e.detail.userInfo.avatarUrl,
+						nickname: e.detail.userInfo.nickName
+					},
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 			getTags() {
 				uni.request({
 					url: this.$requestUrl + 'get_tag_list',
@@ -101,10 +163,6 @@
 				});
 			},
 			getAdvertises(tagId = '') {
-				uni.showLoading({
-					title: '',
-					mask: false
-				});
 				uni.request({
 					url: this.$requestUrl + 'get_advertise_list',
 					method: 'GET',
@@ -113,7 +171,6 @@
 					},
 					success: res => {
 						this.adData = res.data.data;
-						console.log(res.data);
 					},
 					fail: () => {},
 					complete: () => {
@@ -127,9 +184,7 @@
 				this.getAdvertises(tagId);
 			},
 			goAdd() {
-				let detail = {
-				
-				}
+				let detail = {}
 				uni.navigateTo({
 					url: "../ad-add/ad-add?detailData=" + JSON.stringify(detail)
 				})
@@ -141,6 +196,15 @@
 				uni.navigateTo({
 					url: "../ad-detail/ad-detail?detailData=" + JSON.stringify(detail)
 				})
+			},
+			barChange(e) {
+				let key = e.detail.key;
+				if (key == 'mine') {
+					let detail = {}
+					uni.navigateTo({
+						url: "../my/my?detailData=" + JSON.stringify(detail)
+					})
+				}
 			}
 		},
 		onShareAppMessage() {
@@ -155,7 +219,7 @@
 <style>
 	@import "../../common/list.css";
 
-	.add{
+	.add {
 		width: 60px;
 		height: 30px;
 		border: 1px solid #e9eaec;
@@ -168,8 +232,8 @@
 		margin-left: -30px;
 		background-color: #fff;
 	}
-		
-	.add-box{
+
+	.add-box {
 		width: 44px;
 		height: 44px;
 		border-radius: 50%;
@@ -191,9 +255,17 @@
 		margin-bottom: 8px;
 	}
 
-	.tab-bar {
-		width: 100%;
-		position: fixed;
+	.login-btn {
+		position: absolute;
+		top: 0;
 		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+		background: transparent;
+	}
+
+	.login-btn:after {
+		border: 0;
 	}
 </style>

@@ -35,8 +35,29 @@
             "path" : "pages/ad-add/ad-add",
             "style" : {
                 "navigationBarTitleText" : "添加广告",
+                "usingComponents" : {
+                    "i-icon" : "/wxcomponents/icon/index"
+                }
+            }
+        },
+        {
+            "path" : "pages/my/my",
+            "style" : {
+                "usingComponents" : {
+                    "i-cell-group" : "/wxcomponents/cell-group/index",
+                    "i-cell" : "/wxcomponents/cell/index",
+                    "i-tab-bar" : "/wxcomponents/tab-bar/index",
+                    "i-tab-bar-item" : "/wxcomponents/tab-bar-item/index"
+                }
+            }
+        },
+        {
+            "path" : "pages/edit/edit",
+            "style" : {
+				"navigationBarBackgroundColor": "#f3f3f3",
+				"enablePullDownRefresh": false,
 				"usingComponents" : {
-					"i-input": "/wxcomponents/input/index"
+				    "i-icon" : "/wxcomponents/icon/index"
 				}
 			}
         }
@@ -61,13 +82,22 @@
                 "name" : "ader",
                 "path" : "pages/ader/ader",
                 "query" : "detailData={\"advertiser_id\":1}"
-            }
+            },
+            {
+                "name" : "my",
+                "path" : "pages/my/my"
+            },
+			{
+				"name" : "edit",
+				"path" : "pages/edit/edit",
+				"query" : "detailData={\"title\":\"设置名称\",\"type\":\"input\",\"name\":\"ader_name\",\"value\":\"水果批发\"}"
+			}
         ]
     },
     "globalStyle" : {
         "navigationBarTextStyle" : "black",
         "navigationBarTitleText" : "广而告之",
-        "navigationBarBackgroundColor" : "#F8F8F8",
-        "backgroundColor" : "#F8F8F8"
+        "navigationBarBackgroundColor" : "#fff",
+        "backgroundColor" : "#fff"
     }
 }

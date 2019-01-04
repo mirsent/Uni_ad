@@ -13,6 +13,12 @@
 </script>
 
 <style>
+	.tab-bar {
+		width: 100%;
+		position: fixed;
+		bottom: 0;
+	}
+
 	.flex-rowsb {
 		display: flex;
 		justify-content: space-between;
