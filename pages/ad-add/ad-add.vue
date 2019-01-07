@@ -53,6 +53,7 @@
 </template>
 
 <script>
+	import service from '../../service.js';
 	export default {
 		data() {
 			return {
@@ -67,6 +68,7 @@
 			};
 		},
 		onLoad() {
+			this.aderId = service.getUsers()['ader_id'];
 			this.getTags();
 		},
 		methods: {
@@ -126,7 +128,9 @@
 						ad_imgs: this.imgs
 					},
 					success: res => {
-						
+						uni.redirectTo({
+							url: '../ad/ad',
+						});
 					},
 					fail: () => {},
 					complete: () => {}

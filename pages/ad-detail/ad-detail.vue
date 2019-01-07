@@ -1,12 +1,14 @@
 <template>
 	<view class="content">
-		<swiper :indicator-dots="indicator_dots" :autoplay="autoplay" :interval="interval" :duration="duration">
-			<swiper-item>
-				<view class="swiper-item">
-					<image src="../../static/image/listimg.jpg"></image>
-				</view>
-			</swiper-item>
-		</swiper>
+		<view v-if="adInfo.ad_imgs">
+			<swiper :indicator-dots="indicator_dots" :autoplay="autoplay" :interval="interval" :duration="duration">
+				<swiper-item v-for="(img,index) in adInfo.ad_imgs_arr" :key="index">
+					<view class="swiper-item">
+						<image :src="img"></image>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
 
 		<view class="ad-list">
 			<view class="list-cell">
@@ -76,8 +78,8 @@
 				let detail = {
 					advertiser_id: e
 				}
-				uni.redirectTo({
-					url: "../ad/ad?detailData=" + JSON.stringify(detail)
+				uni.navigateTo({
+					url: "../ader/ader?detailData=" + JSON.stringify(detail)
 				})
 			},
 			goHome() {

@@ -31,11 +31,11 @@
 		
 		<view class="item">
 			<i-cell-group>
-				<i-cell title="发布" is-link url="/pages/ad/ad">
-				
+				<i-cell title="发布">
+					<text slot="footer">23</text>
 				</i-cell>
-				<i-cell title="收藏" is-link url="/pages/ad/ad">
-				
+				<i-cell title="收藏">
+					<text slot="footer">38</text>
 				</i-cell>
 			</i-cell-group>
 		</view>
