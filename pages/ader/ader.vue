@@ -3,7 +3,7 @@
 
 		<view class="info">
 			<view class="info-img">
-				<i-avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large"></i-avatar>
+				<i-avatar :src="aderInfo.head" size="large"></i-avatar>
 			</view>
 			<view class="info-name">
 				{{aderInfo.ader_name}}

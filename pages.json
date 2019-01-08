@@ -54,12 +54,16 @@
         {
             "path" : "pages/edit/edit",
             "style" : {
-				"navigationBarBackgroundColor": "#f3f3f3",
-				"enablePullDownRefresh": false,
-				"usingComponents" : {
-				    "i-icon" : "/wxcomponents/icon/index"
-				}
-			}
+                "navigationBarBackgroundColor" : "#f3f3f3",
+                "enablePullDownRefresh" : false,
+                "usingComponents" : {
+                    "i-icon" : "/wxcomponents/icon/index"
+                }
+            }
+        },
+        {
+            "path" : "pages/list/list",
+            "style" : {}
         }
     ],
     "condition" : {
@@ -76,7 +80,7 @@
             {
                 "name" : "ad-detail",
                 "path" : "pages/ad-detail/ad-detail",
-                "query" : "detailData={\"advertise_id\":1}"
+                "query" : "detailData={\"advertise_id\":3}"
             },
             {
                 "name" : "ader",
@@ -87,11 +91,11 @@
                 "name" : "my",
                 "path" : "pages/my/my"
             },
-			{
-				"name" : "edit",
-				"path" : "pages/edit/edit",
-				"query" : "detailData={\"title\":\"设置名称\",\"type\":\"input\",\"name\":\"ader_name\",\"value\":\"水果批发\"}"
-			}
+            {
+                "name" : "edit",
+                "path" : "pages/edit/edit",
+                "query" : "detailData={\"title\":\"设置名称\",\"type\":\"input\",\"name\":\"ader_name\",\"value\":\"水果批发\"}"
+            }
         ]
     },
     "globalStyle" : {

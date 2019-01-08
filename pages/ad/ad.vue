@@ -10,6 +10,11 @@
 
 		<scroll-view scroll-y :style="{height: scrollHeight+'px'}">
 			<view class="ad-list">
+				<view class="list-cell" v-if="!adData.length">
+					<view class="list-title">
+						暂无内容...
+					</view>
+				</view>
 
 				<view class="list-cell" v-for="(ad,index) in adData" :key="index" @tap="goDetail(ad.id)">
 
@@ -75,11 +80,6 @@
 			}
 		},
 		onLoad() {
-			uni.showLoading({
-				title: '',
-				mask: false
-			});
-			
 			let _this = this;
 			// #ifdef MP-WEIXIN
 			wx.getSetting({
@@ -163,6 +163,10 @@
 				});
 			},
 			getAdvertises(tagId = '') {
+				uni.showLoading({
+					title: '',
+					mask: false
+				});
 				uni.request({
 					url: this.$requestUrl + 'get_advertise_list',
 					method: 'GET',

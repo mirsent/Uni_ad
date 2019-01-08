@@ -31,11 +31,11 @@
 		
 		<view class="item">
 			<i-cell-group>
-				<i-cell title="发布">
-					<text slot="footer">23</text>
+				<i-cell title="发布" is-link @tap="goList(1)">
+					<text slot="footer">{{info.n_ad}}</text>
 				</i-cell>
-				<i-cell title="收藏">
-					<text slot="footer">38</text>
+				<i-cell title="收藏" is-link @tap="goList(2)">
+					<text slot="footer">{{info.n_collect}}</text>
 				</i-cell>
 			</i-cell-group>
 		</view>
@@ -126,7 +126,15 @@
 						url: "../ad/ad?detailData=" + JSON.stringify(detail)
 					})
 				}
-			}
+			},
+			goList(e) {
+				let detail = {
+					type: e
+				}
+				uni.navigateTo({
+					url: "../list/list?detailData=" + JSON.stringify(detail)
+				})
+			},
 		}
 	}
 </script>

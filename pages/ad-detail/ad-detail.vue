@@ -29,24 +29,31 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="tab">
 			<view class="tab-more" @tap="goAdvertiser(adInfo.publisher_id)">
 				查看此人更多
 			</view>
 			<view class="action-group">
-				<i-icon type="homepage" size="30" color="#5a5e61" @tap="goHome"/>
-				<i-icon type="collection" size="30" color="#5a5e61"/>
-				<i-icon type="share" size="30" color="#5a5e61"/>
+				<i-icon type="homepage" size="30" color="#5a5e61" @tap="goHome" />
+				<i-icon v-if="isCollect" type="collection_fill" size="30" color="#5a5e61" @tap="collectNo" />
+				<i-icon v-else type="collection" size="30" color="#5a5e61" @tap="collect" />
+				<button open-type="share">
+					<i-icon type="share" size="30" color="#5a5e61" />
+				</button>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import service from '../../service.js';
 	export default {
 		data() {
 			return {
+				adId: '',
+				aderId: '',
+				isCollect: '',
 				indicator_dots: true,
 				autoplay: true,
 				interval: 3000,
@@ -56,19 +63,69 @@
 		},
 		onLoad(e) {
 			let info = JSON.parse(e.detailData);
+			this.aderId = service.getUsers()['ader_id'];
+			this.adId = info.advertise_id
 			this.getAdDetail(info.advertise_id)
+			this.getCollect()
 		},
 		methods: {
 			getAdDetail(id) {
 				uni.request({
-					url: this.$requestUrl+'get_advertise_detail',
+					url: this.$requestUrl + 'get_advertise_detail',
 					method: 'GET',
 					data: {
 						advertise_id: id
 					},
 					success: res => {
-						console.log(res.data);
 						this.adInfo = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			getCollect() {
+				uni.request({
+					url: this.$requestUrl + 'is_collect',
+					method: 'GET',
+					data: {
+						ad_id: this.adId,
+						ader_id: this.aderId
+					},
+					success: res => {
+						this.isCollect = res.data.data;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			collect() {
+				uni.request({
+					url: this.$requestUrl + 'collect',
+					method: 'POST',
+					header: {
+						'content-type': 'application/x-www-form-urlencoded'
+					},
+					data: {
+						ad_id: this.adId,
+						ader_id: this.aderId
+					},
+					success: res => {
+						this.isCollect = 1;
+					},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			collectNo() {
+				uni.request({
+					url: this.$requestUrl+'cancel_collect',
+					method: 'GET',
+					data: {
+						ad_id: this.adId,
+						ader_id: this.aderId
+					},
+					success: res => {
+						this.isCollect = 0;
 					},
 					fail: () => {},
 					complete: () => {}
@@ -90,6 +147,20 @@
 					complete: () => {}
 				});
 			}
+		},
+		onShareAppMessage() {
+			let imageUrl = '';
+			let detail = {
+				advertise_id: this.aderId
+			}
+			if (this.adInfo.ad_imgs) {
+				imageUrl = this.adInfo.ad_imgs_arr[0]
+			}
+			return {
+				title: this.adInfo.ad_title,
+				imageUrl: imageUrl,
+				path: "page/ad-detail/ad-detail?detailData=" + JSON.stringify(detail)
+			}
 		}
 	}
 </script>
@@ -104,8 +175,8 @@
 	.swiper-item image {
 		width: 100%;
 	}
-	
-	.tab{
+
+	.tab {
 		padding: 0 10px;
 		background-color: #f8fcff;
 		position: fixed;
@@ -117,13 +188,30 @@
 		align-items: center;
 		justify-content: space-between;
 	}
-	.tab-more{
+
+	.tab-more {
 		font-size: 28upx;
 		background: #ebeef3;
 		border-radius: 20px;
 		padding: 5px 10px;
 	}
-	.action-group i-icon{
+
+	.action-group {
+		display: flex;
+	}
+
+	.action-group button {
+		padding: 0;
+		margin: 0;
+		background: none;
+		line-height: 0;
+	}
+
+	.action-group button:after {
+		border: 0;
+	}
+
+	.action-group i-icon {
 		margin-left: 12px;
 	}
 </style>
