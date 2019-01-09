@@ -48,6 +48,15 @@
 				this.value = ''
 			},
 			save() {
+				if (this.value == '') {
+					uni.showToast({
+						title: '还没有填入内容',
+						icon: 'none',
+						mask: false,
+						duration: 1500
+					});
+					return;
+				}
 				uni.request({
 					url: this.$requestUrl+'update_advertiser_once',
 					method: 'POST',

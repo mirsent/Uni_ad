@@ -71,7 +71,9 @@
 		data() {
 			return {
 				authed: false,
+				isComplete: false,
 				openid: '',
+				aderId: '',
 				
 				currentScroll: 0,
 				scrollHeight: '',
@@ -79,30 +81,24 @@
 				adData: []
 			}
 		},
-		onLoad() {
-			let _this = this;
-			// #ifdef MP-WEIXIN
-			wx.getSetting({
-				success(res) {
-					if (res.authSetting['scope.userInfo']) {
-						_this.authed = true;
-					}
-				}
-			})
-			// #endif
-			
+		onShow() {
 			uni.login({
 				provider: 'weixin',
 				success: res => {
 					uni.request({
 						url: this.$requestUrl + 'code_2_session',
-						method: 'GET',
+						method: 'POST',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
 						data: {
 							js_code: res.code
 						},
 						success: res => {
 							let info = res.data.data;
+							this.isComplete = info.is_complete
 							this.openid = info.openid
+							this.aderId = info.id
 							service.addUser(info)
 						},
 						fail: () => {},
@@ -115,6 +111,18 @@
 					this.getAdvertises();
 				}
 			});
+		},
+		onLoad() {
+			let _this = this;
+			// #ifdef MP-WEIXIN
+			wx.getSetting({
+				success(res) {
+					if (res.authSetting['scope.userInfo']) {
+						_this.authed = true;
+					}
+				}
+			})
+			// #endif
 		},
 		onReady() {
 			uni.getSystemInfo({
@@ -133,6 +141,7 @@
 			})
 		},
 		methods: {
+			// 授权
 			getUserInfo(e) {
 				this.authed = true;
 				uni.request({
@@ -188,10 +197,25 @@
 				this.getAdvertises(tagId);
 			},
 			goAdd() {
-				let detail = {}
-				uni.navigateTo({
-					url: "../ad-add/ad-add?detailData=" + JSON.stringify(detail)
-				})
+				// 判断是否完善信息
+				if (this.isComplete) {
+					let detail = {}
+					uni.navigateTo({
+						url: "../ad-add/ad-add?detailData=" + JSON.stringify(detail)
+					})
+				} else {
+					uni.showToast({
+						title: '请先完善个人信息',
+						icon: 'none',
+						mask: false,
+						duration: 1000
+					});
+					setTimeout(function(){
+						uni.navigateTo({
+							url: "../ader-edit/ader-edit"
+						})
+					}, 1000)
+				}
 			},
 			goDetail(e) {
 				let detail = {

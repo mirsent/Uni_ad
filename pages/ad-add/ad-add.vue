@@ -25,7 +25,7 @@
 				</view>
 				<view class="input">
 					<textarea value="" @input="briefChange" />
-					</view>
+				</view>
 			</view>
 		
 			<view class="uploader">
@@ -68,7 +68,7 @@
 			};
 		},
 		onLoad() {
-			this.aderId = service.getUsers()['ader_id'];
+			this.aderId = service.getUsers()['id'];
 			this.getTags();
 		},
 		methods: {
@@ -128,12 +128,14 @@
 						ad_imgs: this.imgs
 					},
 					success: res => {
-						uni.redirectTo({
+						uni.reLaunch({
 							url: '../ad/ad',
 						});
 					},
 					fail: () => {},
-					complete: () => {}
+					complete: () => {
+						uni.hideLoading()
+					}
 				});
 			},
 			uploadImg(imgPath, count) {
@@ -157,6 +159,10 @@
 				});
 			},
 			save() {
+				uni.showLoading({
+					title: '',
+					mask: false
+				});
 				if (!this.tagId) {
 					uni.showToast({
 						title: '选择广告标签',

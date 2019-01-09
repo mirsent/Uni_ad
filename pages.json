@@ -70,6 +70,12 @@
             "style" : {
                 "navigationBarTitleText" : "我的二维码"
             }
+        },
+        {
+            "path" : "pages/ader-edit/ader-edit",
+            "style" : {
+				"navigationBarTitleText" : "完善信息"
+			}
         }
     ],
     "condition" : {
@@ -94,13 +100,17 @@
                 "query" : "detailData={\"advertiser_id\":1}"
             },
             {
+                "name" : "ader-edit",
+                "path" : "pages/ader-edit/ader-edit"
+            },
+            {
                 "name" : "my",
                 "path" : "pages/my/my"
             },
             {
                 "name" : "code",
                 "path" : "pages/code/code",
-                "query" : "detailData={\"qrcode\":\"http://ad.ineinv.com/Uploads/qrcode/1.png\"}"
+                "query" : "detailData={\"qrcode\":\"https://ad.ineinv.com/Uploads/qrcode/1.png\",\"ader_name\":\"马一\",\"tel\":\"18222278653\",\"location\":\"天津市和平区气象台路22号\",\"service\":\"天津市和平区气象台路哈哈哈哈换行\"}"
             },
             {
                 "name" : "edit",

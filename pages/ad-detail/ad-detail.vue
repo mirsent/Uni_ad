@@ -70,6 +70,10 @@
 		},
 		methods: {
 			getAdDetail(id) {
+				uni.showLoading({
+					title: '',
+					mask: false
+				});
 				uni.request({
 					url: this.$requestUrl + 'get_advertise_detail',
 					method: 'GET',
@@ -80,7 +84,9 @@
 						this.adInfo = res.data.data;
 					},
 					fail: () => {},
-					complete: () => {}
+					complete: () => {
+						uni.hideLoading()
+					}
 				});
 			},
 			getCollect() {
