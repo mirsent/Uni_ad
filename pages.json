@@ -64,6 +64,12 @@
         {
             "path" : "pages/list/list",
             "style" : {}
+        },
+        {
+            "path" : "pages/code/code",
+            "style" : {
+                "navigationBarTitleText" : "我的二维码"
+            }
         }
     ],
     "condition" : {
@@ -90,6 +96,11 @@
             {
                 "name" : "my",
                 "path" : "pages/my/my"
+            },
+            {
+                "name" : "code",
+                "path" : "pages/code/code",
+                "query" : "detailData={\"qrcode\":\"http://ad.ineinv.com/Uploads/qrcode/1.png\"}"
             },
             {
                 "name" : "edit",
