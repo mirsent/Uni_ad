@@ -31,7 +31,7 @@
 			<view class="uploader">
 				<block v-for="(image,index) in imageList" :key="index">
 					<view class="uploader-file">
-						<image class="uploader-img" :src="image" :data-src="image"></image>
+						<image class="uploader-img" :src="image"></image>
 						<view class="remove" @tap="removeImage(index)">
 							<i-icon type="trash" size="30" color="#fff" />
 						</view>
@@ -96,6 +96,7 @@
 					sizeType: ['original', 'compressed'],
 					sourceType: ['album', 'camera'],
 					success: function (res) {
+						console.log(res);
 						_this.imageList = _this.imageList.concat(res.tempFilePaths);
 					}
 				});

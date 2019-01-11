@@ -52,6 +52,7 @@
 		data() {
 			return {
 				adId: '',
+				tagId: '',
 				aderId: '',
 				isCollect: '',
 				indicator_dots: true,
@@ -62,23 +63,29 @@
 			};
 		},
 		onLoad(e) {
+			this.aderId = service.getUsers()['id'];
 			let info = JSON.parse(e.detailData);
-			this.aderId = service.getUsers()['ader_id'];
-			this.adId = info.advertise_id
-			this.getAdDetail(info.advertise_id)
+			this.adId = info.ad_id
+			this.tagId = info.tag_id
+			this.getAdDetail()
 			this.getCollect()
 		},
 		methods: {
-			getAdDetail(id) {
+			getAdDetail() {
 				uni.showLoading({
 					title: '',
 					mask: false
 				});
 				uni.request({
 					url: this.$requestUrl + 'get_advertise_detail',
-					method: 'GET',
+					method: 'POST',
+					header: {
+						'content-type': 'application/x-www-form-urlencoded'
+					},
 					data: {
-						advertise_id: id
+						ad_id: this.adId,
+						tag_id: this.tagId,
+						ader_id: this.aderId
 					},
 					success: res => {
 						this.adInfo = res.data.data;

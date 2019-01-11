@@ -16,21 +16,21 @@
 					</view>
 				</view>
 
-				<view class="list-cell" v-for="(ad,index) in adData" :key="index" @tap="goDetail(ad.id)">
+				<view class="list-cell" v-for="(ad,index) in adData" :key="index" @tap="goDetail(ad)">
 
-					<!-- <view class="list-img">
-						<image src="../../static/image/listimg.jpg" mode="widthFix"></image>
-					</view> -->
+					<view class="list-img" v-if="ad.is_vip">
+						<image :src="ad.cover" mode="widthFix"></image>
+					</view>
 
 					<view class="list-title">
 						[{{ad.tag_name}}] {{ad.ad_title}}
 					</view>
 
-					<!-- <view class="list-brief">
+					<view class="list-brief" v-if="ad.is_vip">
 						<view class="text-2-ellipsis">
-							本周六日，到店消费满88元，即可免费赠送咖啡一杯哦！
+							{{ad.ad_brief}}
 						</view>
-					</view> -->
+					</view>
 
 					<view class="flex-rowsb list-footer">
 						<view>
@@ -135,7 +135,7 @@
 					query.exec(data => {
 						let tab = data[0];
 						let bar = data[1];
-						this.scrollHeight = windowHeight - tab.height - bar.height - 8;
+						this.scrollHeight = windowHeight - tab.height - bar.height - 8 + 30;
 					});
 				}
 			})
@@ -199,10 +199,30 @@
 			goAdd() {
 				// 判断是否完善信息
 				if (this.isComplete) {
-					let detail = {}
-					uni.navigateTo({
-						url: "../ad-add/ad-add?detailData=" + JSON.stringify(detail)
-					})
+					uni.request({
+						url: this.$requestUrl+'check_publish_auth',
+						method: 'GET',
+						data: {
+							ader_id: this.aderId
+						},
+						success: res => {
+							if (res.data.status == 1) {
+								let detail = {}
+								uni.navigateTo({
+									url: "../ad-add/ad-add?detailData=" + JSON.stringify(detail)
+								})
+							} else{
+								uni.showToast({
+									title: '今日发布数已用光',
+									icon: 'none',
+									mask: false,
+									duration: 1500
+								});
+							}
+						},
+						fail: () => {},
+						complete: () => {}
+					});
 				} else {
 					uni.showToast({
 						title: '请先完善个人信息',
@@ -219,7 +239,8 @@
 			},
 			goDetail(e) {
 				let detail = {
-					advertise_id: e
+					ad_id: e.id,
+					tag_id: e.tag_id
 				}
 				uni.navigateTo({
 					url: "../ad-detail/ad-detail?detailData=" + JSON.stringify(detail)

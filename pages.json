@@ -74,7 +74,13 @@
         {
             "path" : "pages/ader-edit/ader-edit",
             "style" : {
-				"navigationBarTitleText" : "完善信息"
+                "navigationBarTitleText" : "完善信息"
+            }
+        },
+        {
+            "path" : "pages/nearby/nearby",
+            "style" : {
+				"navigationBarTitleText" : "附近的广告"
 			}
         }
     ],
@@ -106,6 +112,10 @@
             {
                 "name" : "my",
                 "path" : "pages/my/my"
+            },
+            {
+                "name" : "nearby",
+                "path" : "pages/nearby/nearby"
             },
             {
                 "name" : "code",

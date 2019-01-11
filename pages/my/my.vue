@@ -1,44 +1,54 @@
 <template>
 	<view class="wrap">
-		<view class="item header">
-			<view class="head">
-				<image :src="info.head" mode=""></image>
-				<view class="info">
-					{{info.nickname}}
+		<scroll-view scroll-y :style="{height: scrollHeight+'px'}">
+			<view class="item header">
+				<view class="head">
+					<image :src="info.head" mode=""></image>
+					<view class="info">
+						{{info.nickname}}
+					</view>
+				</view>
+				<view class="code" @tap="goCode">
+					<image src="../../static/image/code.png"></image>
 				</view>
 			</view>
-			<view class="code" @tap="goCode">
-				<image src="../../static/image/code.png"></image>
+			
+			<view class="item">
+				<i-cell-group>
+					<i-cell title="名称" is-link @tap="editName">
+						<text slot="footer">{{info.ader_name||''}}</text>
+					</i-cell>
+					<i-cell title="电话" is-link @tap="editTel">
+						<text slot="footer">{{info.tel||''}}</text>
+					</i-cell>
+					<i-cell title="地址" is-link @tap="editLocation">
+						<text slot="footer">{{info.location||''}}</text>
+					</i-cell>
+					<i-cell title="服务内容" is-link @tap="editService">
+						<text slot="footer">{{info.service||''}}</text>
+					</i-cell>
+				</i-cell-group>
 			</view>
-		</view>
-
-		<view class="item">
-			<i-cell-group>
-				<i-cell title="名称" is-link @tap="editName">
-					<text slot="footer">{{info.ader_name||''}}</text>
-				</i-cell>
-				<i-cell title="电话" is-link @tap="editTel">
-					<text slot="footer">{{info.tel||''}}</text>
-				</i-cell>
-				<i-cell title="地址" is-link @tap="editLocation">
-					<text slot="footer">{{info.location||''}}</text>
-				</i-cell>
-				<i-cell title="服务内容" is-link @tap="editService">
-					<text slot="footer">{{info.service||''}}</text>
-				</i-cell>
-			</i-cell-group>
-		</view>
-
-		<view class="item">
-			<i-cell-group>
-				<i-cell title="发布" is-link @tap="goList(1)">
-					<text slot="footer">{{info.n_ad}}</text>
-				</i-cell>
-				<i-cell title="收藏" is-link @tap="goList(2)">
-					<text slot="footer">{{info.n_collect}}</text>
-				</i-cell>
-			</i-cell-group>
-		</view>
+			
+			<view class="item">
+				<i-cell-group>
+					<i-cell title="附近" is-link @tap="goNearby">
+						<text slot="footer"></text>
+					</i-cell>
+				</i-cell-group>
+			</view>
+			
+			<view class="item">
+				<i-cell-group>
+					<i-cell title="发布" is-link @tap="goList(1)">
+						<text slot="footer">{{info.n_ad}}</text>
+					</i-cell>
+					<i-cell title="收藏" is-link @tap="goList(2)">
+						<text slot="footer">{{info.n_collect}}</text>
+					</i-cell>
+				</i-cell-group>
+			</view>
+		</scroll-view>
 
 		<view class="tab-bar">
 			<i-tab-bar current="mine" @change="barChange">
@@ -55,8 +65,17 @@
 	export default {
 		data() {
 			return {
+				scrollHeight: '',
 				info: []
 			};
+		},
+		onLoad() {
+			let _this = this;
+			uni.getSystemInfo({
+				success(res) {
+					_this.scrollHeight = res.windowHeight - 50;
+				}
+			})
 		},
 		onShow() {
 			let info = service.getUsers();
@@ -72,6 +91,20 @@
 				fail: () => {},
 				complete: () => {}
 			});
+			
+			
+			uni.request({
+				url: this.$requestUrl+'get_nearby_advertise',
+				method: 'GET',
+				data: {
+					ader_id: 1
+				},
+				success: res => {},
+				fail: () => {},
+				complete: () => {}
+			});
+			
+			
 		},
 		methods: {
 			editName() {
@@ -97,14 +130,38 @@
 				})
 			},
 			editLocation() {
-				let detail = {
-					title: '设置地址',
-					type: 'textarea',
-					name: 'location',
-					value: this.info.location
-				}
-				uni.redirectTo({
-					url: "../edit/edit?detailData=" + JSON.stringify(detail)
+				let _this = this;
+				uni.chooseLocation({
+					success(res) {
+						uni.showLoading({
+							title: '',
+							mask: false
+						});
+						let location = res.address;
+						let latitude = res.latitude;
+						let longitude = res.longitude;
+						uni.request({
+							url: _this.$requestUrl+'update_advertiser',
+							method: 'POST',
+							header: {
+								'content-type': 'application/x-www-form-urlencoded'
+							},
+							data: {
+								openid: _this.info.openid,
+								location: location,
+								latitude: latitude,
+								longitude: longitude
+							},
+							success: res => {
+								console.log(location);
+								_this.info.location = location;
+							},
+							fail: () => {},
+							complete: () => {
+								uni.hideLoading()
+							}
+						});
+					}
 				})
 			},
 			editService() {
@@ -161,6 +218,11 @@
 						})
 					}, 1000)
 				}
+			},
+			goNearby() {
+				uni.navigateTo({
+					url: "../nearby/nearby"
+				})
 			}
 		}
 	}
@@ -171,7 +233,7 @@
 		height: 100%;
 		background-color: #f4f4f4;
 	}
-
+	
 	.item {
 		background-color: #fff;
 		margin-bottom: 10px;

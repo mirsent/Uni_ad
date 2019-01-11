@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="ad-list">
-			<view class="list-cell" @tap="goDetail(ad.id)" v-for="(ad,index) in adData" :key="index">
+			<view class="list-cell" @tap="goDetail(ad)" v-for="(ad,index) in adData" :key="index">
 				<view class="list-title">
 					[{{ad.tag_name}}] {{ad.ad_title}}
 				</view>
@@ -28,7 +28,7 @@
 			};
 		},
 		onLoad(e) {
-			this.aderId = service.getUsers()['ader_id'];
+			this.aderId = service.getUsers()['id'];
 			let info = JSON.parse(e.detailData);
 			this.getAdList(info.type)
 		},
@@ -53,7 +53,16 @@
 						uni.hideLoading()
 					}
 				});
-			}
+			},
+			goDetail(e) {
+				let detail = {
+					ad_id: e.id,
+					tag_id: e.tag_id
+				}
+				uni.navigateTo({
+					url: "../ad-detail/ad-detail?detailData=" + JSON.stringify(detail)
+				})
+			},
 		}
 	}
 </script>
